@@ -1,0 +1,25 @@
+{
+  "name": "myblock-credentials",
+  "version": "1.0.0",
+  "description": "Universal Youth Credential Schema — a shared credential ledger for citywide/cross-organization micro-credentials",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "seed": "node src/seed.js",
+    "test": "node --test src/**/*.test.js"
+  },
+  "keywords": [
+    "youth",
+    "credentials",
+    "micro-credentials",
+    "workforce",
+    "education"
+  ],
+  "author": "EnzoBlanks037",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "express": "^5.2.1",
+    "uuid": "^13.0.0"
+  }
+}
