@@ -83,6 +83,26 @@ function initTables(db) {
     -- Index for issuer queries
     CREATE INDEX IF NOT EXISTS idx_credentials_issuer
       ON credentials(issuer_id);
+
+    -- Shared credential ledger — append-only, hash-chained audit log
+    CREATE TABLE IF NOT EXISTS ledger (
+      seq           INTEGER PRIMARY KEY AUTOINCREMENT,
+      id            TEXT NOT NULL UNIQUE,
+      timestamp     TEXT NOT NULL DEFAULT (datetime('now')),
+      event_type    TEXT NOT NULL,
+      actor         TEXT,
+      entity_type   TEXT NOT NULL,
+      entity_id     TEXT NOT NULL,
+      data          TEXT,
+      prev_hash     TEXT,
+      hash          TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ledger_entity
+      ON ledger(entity_type, entity_id);
+
+    CREATE INDEX IF NOT EXISTS idx_ledger_event_type
+      ON ledger(event_type);
   `);
 }
 

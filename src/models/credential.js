@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const crypto = require("crypto");
 const { getDb } = require("../db");
+const LedgerModel = require("./ledger");
 
 function generateVerificationCode() {
   // 8-char alphanumeric code, uppercase for easy sharing
@@ -33,7 +34,23 @@ const CredentialModel = {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(id, credential_def_id, issuer_id, youth_id, expires_at || null, evidence_url || null, notes || null, verification_code);
 
-    return CredentialModel.findById(id);
+    const credential = CredentialModel.findById(id);
+
+    LedgerModel.append({
+      event_type: "credential_issued",
+      entity_type: "credential",
+      entity_id: id,
+      actor: credential.issuer_name,
+      data: {
+        credential_name: credential.credential_name,
+        category: credential.category,
+        youth_name: credential.youth_first_name + " " + credential.youth_last_name,
+        issuer_name: credential.issuer_name,
+        verification_code,
+      },
+    });
+
+    return credential;
   },
 
   findById(id) {
@@ -145,7 +162,24 @@ const CredentialModel = {
       SET status = 'revoked', revoked_at = datetime('now'), revoked_reason = ?
       WHERE id = ? AND status = 'active'
     `).run(reason || null, id);
-    return CredentialModel.findById(id);
+
+    const credential = CredentialModel.findById(id);
+
+    if (credential && credential.status === "revoked") {
+      LedgerModel.append({
+        event_type: "credential_revoked",
+        entity_type: "credential",
+        entity_id: id,
+        data: {
+          credential_name: credential.credential_name,
+          youth_name: credential.youth_first_name + " " + credential.youth_last_name,
+          issuer_name: credential.issuer_name,
+          reason: reason || null,
+        },
+      });
+    }
+
+    return credential;
   },
 };
 

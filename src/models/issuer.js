@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const { getDb } = require("../db");
+const LedgerModel = require("./ledger");
 
 const IssuerModel = {
   create({ name, type, contact_email, contact_phone, address }) {
@@ -31,7 +32,18 @@ const IssuerModel = {
       UPDATE issuers SET status = 'approved', approved_by = ?, updated_at = datetime('now')
       WHERE id = ? AND status = 'pending'
     `).run(approved_by, id);
-    return IssuerModel.findById(id);
+
+    const issuer = IssuerModel.findById(id);
+    if (issuer && issuer.status === "approved") {
+      LedgerModel.append({
+        event_type: "issuer_approved",
+        entity_type: "issuer",
+        entity_id: id,
+        actor: approved_by,
+        data: { issuer_name: issuer.name, type: issuer.type },
+      });
+    }
+    return issuer;
   },
 
   suspend(id) {
@@ -40,7 +52,17 @@ const IssuerModel = {
       UPDATE issuers SET status = 'suspended', updated_at = datetime('now')
       WHERE id = ? AND status = 'approved'
     `).run(id);
-    return IssuerModel.findById(id);
+
+    const issuer = IssuerModel.findById(id);
+    if (issuer && issuer.status === "suspended") {
+      LedgerModel.append({
+        event_type: "issuer_suspended",
+        entity_type: "issuer",
+        entity_id: id,
+        data: { issuer_name: issuer.name, type: issuer.type },
+      });
+    }
+    return issuer;
   },
 
   revoke(id) {
@@ -49,7 +71,17 @@ const IssuerModel = {
       UPDATE issuers SET status = 'revoked', updated_at = datetime('now')
       WHERE id = ?
     `).run(id);
-    return IssuerModel.findById(id);
+
+    const issuer = IssuerModel.findById(id);
+    if (issuer && issuer.status === "revoked") {
+      LedgerModel.append({
+        event_type: "issuer_revoked",
+        entity_type: "issuer",
+        entity_id: id,
+        data: { issuer_name: issuer.name, type: issuer.type },
+      });
+    }
+    return issuer;
   },
 };
 

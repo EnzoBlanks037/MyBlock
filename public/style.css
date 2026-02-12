@@ -399,6 +399,131 @@ input::placeholder { color: var(--text-dim); }
   font-size: 0.95rem;
 }
 
+/* ===== Ledger ===== */
+.ledger-controls {
+  margin-bottom: 1.25rem;
+}
+
+.ledger-chain-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+
+.ledger-chain-status.valid {
+  background: var(--green-bg);
+  color: var(--green);
+}
+
+.ledger-chain-status.invalid {
+  background: var(--red-bg);
+  color: var(--red);
+}
+
+.ledger-stats-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1.25rem;
+  text-align: center;
+  min-width: 100px;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 0.15rem;
+}
+
+.ledger-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.6rem;
+}
+
+.ledger-entry-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.ledger-seq {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+
+.ledger-time {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-left: auto;
+}
+
+.ledger-entry-body {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.ledger-detail::after {
+  content: "\00b7";
+  margin-left: 0.5rem;
+  color: var(--text-dim);
+}
+
+.ledger-detail:last-child::after {
+  content: "";
+}
+
+.ledger-hash {
+  font-family: "SF Mono", "Fira Code", monospace;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  cursor: help;
+}
+
+.hash-label {
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.65rem;
+}
+
+.badge-ledger-credential_issued { background: var(--green-bg); color: var(--green); }
+.badge-ledger-credential_revoked { background: var(--red-bg); color: var(--red); }
+.badge-ledger-issuer_approved { background: rgba(91, 138, 245, 0.12); color: var(--accent); }
+.badge-ledger-issuer_suspended { background: var(--yellow-bg); color: var(--yellow); }
+.badge-ledger-issuer_revoked { background: var(--red-bg); color: var(--red); }
+
 /* ===== Footer ===== */
 footer {
   text-align: center;

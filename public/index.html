@@ -19,6 +19,7 @@
     <button class="nav-btn" data-page="wallet">Wallet</button>
     <button class="nav-btn" data-page="issuers">Issuers</button>
     <button class="nav-btn" data-page="credentials">Credentials</button>
+    <button class="nav-btn" data-page="ledger">Ledger</button>
     <button class="nav-btn" data-page="admin">Admin</button>
   </nav>
 
@@ -78,6 +79,33 @@
       </div>
       <button id="cred-defs-load" class="btn-secondary">Load Catalog</button>
       <div id="cred-defs-list" class="result-area"></div>
+    </section>
+
+    <!-- ========== LEDGER ========== -->
+    <section id="page-ledger" class="page">
+      <div class="page-header">
+        <h2>Shared Credential Ledger</h2>
+        <p>Tamper-evident, hash-chained record of every credential event across all organizations.</p>
+      </div>
+
+      <div class="ledger-controls">
+        <div class="ledger-integrity" id="ledger-integrity"></div>
+        <div class="ledger-stats" id="ledger-stats"></div>
+      </div>
+
+      <div class="filter-bar">
+        <select id="ledger-filter-type">
+          <option value="">All events</option>
+          <option value="credential_issued">Credential Issued</option>
+          <option value="credential_revoked">Credential Revoked</option>
+          <option value="issuer_approved">Issuer Approved</option>
+          <option value="issuer_suspended">Issuer Suspended</option>
+          <option value="issuer_revoked">Issuer Revoked</option>
+        </select>
+        <button id="ledger-load-btn" class="btn-secondary">Load</button>
+      </div>
+
+      <div id="ledger-list" class="result-area"></div>
     </section>
 
     <!-- ========== ADMIN ========== -->

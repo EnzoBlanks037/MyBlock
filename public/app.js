@@ -9,6 +9,7 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
     // Auto-load data when switching pages
     if (btn.dataset.page === "issuers") loadIssuers();
     if (btn.dataset.page === "wallet") loadYouthSelect();
+    if (btn.dataset.page === "ledger") loadLedger();
     if (btn.dataset.page === "admin") loadAdminSelects();
   });
 });
@@ -222,6 +223,105 @@ async function loadCredDefs() {
           (d.hours_required ? "<div><div class='label'>Hours</div><div class='value'>" + d.hours_required + "</div></div>" : "") +
           (d.description ? "<div><div class='label'>Description</div><div class='value'>" + escapeHtml(d.description) + "</div></div>" : "") +
           (d.requirements ? "<div><div class='label'>Requirements</div><div class='value'>" + escapeHtml(d.requirements) + "</div></div>" : "") +
+        "</div>" +
+      "</div>";
+  });
+  container.innerHTML = html;
+}
+
+/* ===== Ledger ===== */
+document.getElementById("ledger-load-btn").addEventListener("click", loadLedgerEntries);
+
+async function loadLedger() {
+  loadLedgerIntegrity();
+  loadLedgerStats();
+  loadLedgerEntries();
+}
+
+async function loadLedgerIntegrity() {
+  const container = document.getElementById("ledger-integrity");
+  container.innerHTML = "Verifying chain...";
+  const result = await api("/ledger/verify");
+
+  if (result.valid) {
+    container.innerHTML =
+      '<div class="ledger-chain-status valid">' +
+        '<span class="verify-icon valid">&#10003;</span> ' +
+        "Chain intact &mdash; " + result.entries_checked + " entries verified" +
+      "</div>";
+  } else {
+    container.innerHTML =
+      '<div class="ledger-chain-status invalid">' +
+        '<span class="verify-icon invalid">&#10007;</span> ' +
+        "Chain broken at entry #" + result.broken_at + ": " + escapeHtml(result.reason) +
+      "</div>";
+  }
+}
+
+async function loadLedgerStats() {
+  const container = document.getElementById("ledger-stats");
+  const stats = await api("/ledger/stats");
+
+  let html = '<div class="ledger-stats-grid">';
+  html += '<div class="stat-item"><div class="stat-value">' + stats.total_entries + '</div><div class="stat-label">Total Entries</div></div>';
+
+  stats.by_event_type.forEach(function(t) {
+    html += '<div class="stat-item"><div class="stat-value">' + t.count + '</div><div class="stat-label">' + escapeHtml(formatEventType(t.event_type)) + '</div></div>';
+  });
+  html += "</div>";
+  container.innerHTML = html;
+}
+
+function formatEventType(type) {
+  var labels = {
+    credential_issued: "Issued",
+    credential_revoked: "Revoked",
+    issuer_approved: "Approved",
+    issuer_suspended: "Suspended",
+    issuer_revoked: "Issuer Revoked",
+  };
+  return labels[type] || type;
+}
+
+function eventBadge(type) {
+  var cls = "badge badge-ledger-" + type;
+  return '<span class="' + cls + '">' + escapeHtml(formatEventType(type)) + "</span>";
+}
+
+async function loadLedgerEntries() {
+  var filter = document.getElementById("ledger-filter-type").value;
+  var container = document.getElementById("ledger-list");
+  container.innerHTML = '<div class="empty-state">Loading...</div>';
+
+  var qs = filter ? "?event_type=" + filter : "";
+  var entries = await api("/ledger" + qs);
+
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="empty-state">No ledger entries found.</div>';
+    return;
+  }
+
+  var html = "";
+  entries.forEach(function(e) {
+    var data = {};
+    try { data = JSON.parse(e.data); } catch (err) { /* ignore */ }
+
+    html +=
+      '<div class="ledger-entry">' +
+        '<div class="ledger-entry-header">' +
+          '<span class="ledger-seq">#' + e.seq + "</span>" +
+          eventBadge(e.event_type) +
+          '<span class="ledger-time">' + formatDate(e.timestamp) + "</span>" +
+        "</div>" +
+        '<div class="ledger-entry-body">' +
+          (data.credential_name ? '<span class="ledger-detail"><strong>' + escapeHtml(data.credential_name) + "</strong></span>" : "") +
+          (data.issuer_name ? '<span class="ledger-detail">' + escapeHtml(data.issuer_name) + "</span>" : "") +
+          (data.youth_name ? '<span class="ledger-detail">' + escapeHtml(data.youth_name) + "</span>" : "") +
+          (data.reason ? '<span class="ledger-detail" style="color:var(--red)">Reason: ' + escapeHtml(data.reason) + "</span>" : "") +
+          (e.actor ? '<span class="ledger-detail" style="color:var(--text-dim)">by ' + escapeHtml(e.actor) + "</span>" : "") +
+        "</div>" +
+        '<div class="ledger-hash" title="' + escapeHtml(e.hash) + '">' +
+          '<span class="hash-label">Hash</span> ' + escapeHtml(e.hash.substring(0, 16)) + "&hellip;" +
         "</div>" +
       "</div>";
   });

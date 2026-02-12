@@ -5,6 +5,7 @@ const issuersRouter = require("./routes/issuers");
 const youthRouter = require("./routes/youth");
 const credentialsRouter = require("./routes/credentials");
 const verifyRouter = require("./routes/verify");
+const ledgerRouter = require("./routes/ledger");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use("/api/issuers", issuersRouter);
 app.use("/api/youth", youthRouter);
 app.use("/api/credentials", credentialsRouter);
 app.use("/api/verify", verifyRouter);
+app.use("/api/ledger", ledgerRouter);
 
 // Health check
 app.get("/api/health", (req, res) => {
