@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyBlock — Youth Credentials</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1 class="logo">MyBlock</h1>
+      <p class="tagline">Universal Youth Credential Ledger</p>
+    </div>
+  </header>
+
+  <nav>
+    <button class="nav-btn active" data-page="verify">Verify</button>
+    <button class="nav-btn" data-page="wallet">Wallet</button>
+    <button class="nav-btn" data-page="issuers">Issuers</button>
+    <button class="nav-btn" data-page="credentials">Credentials</button>
+    <button class="nav-btn" data-page="admin">Admin</button>
+  </nav>
+
+  <main>
+    <!-- ========== VERIFY ========== -->
+    <section id="page-verify" class="page active">
+      <div class="page-header">
+        <h2>Verify a Credential</h2>
+        <p>Enter the 8-character code from a youth's credential to check its authenticity.</p>
+      </div>
+      <div class="verify-box">
+        <input type="text" id="verify-code" placeholder="e.g. DFDFEF11" maxlength="8" autocomplete="off" spellcheck="false">
+        <button id="verify-btn" class="btn-primary">Verify</button>
+      </div>
+      <div id="verify-result" class="result-area"></div>
+    </section>
+
+    <!-- ========== WALLET ========== -->
+    <section id="page-wallet" class="page">
+      <div class="page-header">
+        <h2>Youth Wallet</h2>
+        <p>Look up a teen's earned credentials.</p>
+      </div>
+      <div class="search-box">
+        <select id="wallet-youth-select">
+          <option value="">Select a youth...</option>
+        </select>
+        <button id="wallet-btn" class="btn-primary">View Wallet</button>
+      </div>
+      <div id="wallet-result" class="result-area"></div>
+    </section>
+
+    <!-- ========== ISSUERS ========== -->
+    <section id="page-issuers" class="page">
+      <div class="page-header">
+        <h2>Approved Issuers</h2>
+        <p>Organizations authorized to award credentials in the network.</p>
+      </div>
+      <div class="filter-bar">
+        <select id="issuer-filter">
+          <option value="">All statuses</option>
+          <option value="approved" selected>Approved</option>
+          <option value="pending">Pending</option>
+          <option value="suspended">Suspended</option>
+          <option value="revoked">Revoked</option>
+        </select>
+        <button id="issuer-load-btn" class="btn-secondary">Load</button>
+      </div>
+      <div id="issuers-list" class="result-area"></div>
+    </section>
+
+    <!-- ========== CREDENTIALS CATALOG ========== -->
+    <section id="page-credentials" class="page">
+      <div class="page-header">
+        <h2>Credential Catalog</h2>
+        <p>Browse all credential types that can be awarded across the network.</p>
+      </div>
+      <button id="cred-defs-load" class="btn-secondary">Load Catalog</button>
+      <div id="cred-defs-list" class="result-area"></div>
+    </section>
+
+    <!-- ========== ADMIN ========== -->
+    <section id="page-admin" class="page">
+      <div class="page-header">
+        <h2>Admin Panel</h2>
+        <p>Register issuers, enroll youth, define credentials, and issue awards.</p>
+      </div>
+
+      <div class="admin-grid">
+        <!-- Register Issuer -->
+        <div class="admin-card">
+          <h3>Register Issuer</h3>
+          <form id="form-issuer">
+            <input name="name" placeholder="Organization name" required>
+            <select name="type" required>
+              <option value="">Type...</option>
+              <option value="school">School</option>
+              <option value="nonprofit">Nonprofit</option>
+              <option value="rec_center">Rec Center</option>
+              <option value="workforce_program">Workforce Program</option>
+              <option value="government">Government</option>
+              <option value="other">Other</option>
+            </select>
+            <input name="contact_email" type="email" placeholder="Contact email" required>
+            <input name="contact_phone" placeholder="Phone (optional)">
+            <input name="address" placeholder="Address (optional)">
+            <button type="submit" class="btn-primary">Register</button>
+          </form>
+          <div class="form-result" id="result-issuer"></div>
+        </div>
+
+        <!-- Approve Issuer -->
+        <div class="admin-card">
+          <h3>Approve Issuer</h3>
+          <form id="form-approve">
+            <select name="issuer_id" id="approve-issuer-select" required>
+              <option value="">Select pending issuer...</option>
+            </select>
+            <input name="approved_by" placeholder="Approved by (your name)" required>
+            <button type="submit" class="btn-primary">Approve</button>
+          </form>
+          <div class="form-result" id="result-approve"></div>
+        </div>
+
+        <!-- Enroll Youth -->
+        <div class="admin-card">
+          <h3>Enroll Youth</h3>
+          <form id="form-youth">
+            <input name="first_name" placeholder="First name" required>
+            <input name="last_name" placeholder="Last name" required>
+            <input name="date_of_birth" type="date" required>
+            <input name="email" type="email" placeholder="Email (optional)">
+            <input name="city" placeholder="City (optional)">
+            <button type="submit" class="btn-primary">Enroll</button>
+          </form>
+          <div class="form-result" id="result-youth"></div>
+        </div>
+
+        <!-- Define Credential -->
+        <div class="admin-card">
+          <h3>Define Credential</h3>
+          <form id="form-creddef">
+            <select name="issuer_id" class="issuer-select-approved" required>
+              <option value="">Select issuer...</option>
+            </select>
+            <input name="name" placeholder="Credential name" required>
+            <select name="category" required>
+              <option value="">Category...</option>
+              <option value="skill">Skill</option>
+              <option value="completion">Completion</option>
+              <option value="certification">Certification</option>
+              <option value="badge">Badge</option>
+              <option value="hours">Hours</option>
+              <option value="other">Other</option>
+            </select>
+            <input name="description" placeholder="Description (optional)">
+            <input name="requirements" placeholder="Requirements (optional)">
+            <input name="hours_required" type="number" placeholder="Hours required" min="0">
+            <button type="submit" class="btn-primary">Create</button>
+          </form>
+          <div class="form-result" id="result-creddef"></div>
+        </div>
+
+        <!-- Issue Credential -->
+        <div class="admin-card wide">
+          <h3>Issue Credential</h3>
+          <form id="form-issue">
+            <div class="form-row">
+              <select name="issuer_id" class="issuer-select-approved" id="issue-issuer" required>
+                <option value="">Select issuer...</option>
+              </select>
+              <select name="credential_def_id" id="issue-creddef" required>
+                <option value="">Select credential...</option>
+              </select>
+              <select name="youth_id" id="issue-youth" required>
+                <option value="">Select youth...</option>
+              </select>
+            </div>
+            <input name="notes" placeholder="Notes (optional)">
+            <input name="evidence_url" placeholder="Evidence URL (optional)">
+            <button type="submit" class="btn-primary">Issue Credential</button>
+          </form>
+          <div class="form-result" id="result-issue"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>MyBlock &mdash; No crypto. No coins. No speculation. Just verified skills.</p>
+  </footer>
+
+  <script src="/app.js"></script>
+</body>
+</html>
