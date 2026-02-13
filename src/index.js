@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const fs = require("fs");
 const { closeDb } = require("./db");
 const issuersRouter = require("./routes/issuers");
 const youthRouter = require("./routes/youth");
@@ -12,18 +13,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Force browsers to always fetch fresh content
-app.use((req, res, next) => {
-  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
-  res.set("Pragma", "no-cache");
-  res.set("Expires", "0");
-  res.set("Surrogate-Control", "no-store");
-  next();
-});
-
-app.use(express.static(path.join(__dirname, "..", "public")));
-
-// --- Routes ---
+// --- API Routes ---
 app.use("/api/issuers", issuersRouter);
 app.use("/api/youth", youthRouter);
 app.use("/api/credentials", credentialsRouter);
@@ -33,6 +23,15 @@ app.use("/api/ledger", ledgerRouter);
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "myblock-credentials" });
+});
+
+// Serve the frontend — read from disk on every request to avoid caching issues
+app.get("/", (req, res) => {
+  const htmlPath = path.join(__dirname, "..", "public", "index.html");
+  const html = fs.readFileSync(htmlPath, "utf8");
+  res.set("Cache-Control", "no-store");
+  res.set("Content-Type", "text/html");
+  res.send(html);
 });
 
 // --- Start ---

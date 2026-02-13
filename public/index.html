@@ -4,168 +4,320 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MyBlock — Universal Youth Credential Ledger</title>
-  <link rel="stylesheet" href="/style.css">
+  <style>
+    /* ===== Reset & Base ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f0f2f5;
+      color: #1a2332;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      background: linear-gradient(135deg, #1a2332 0%, #2d3a4a 100%);
+      color: #fff;
+      padding: 24px 32px 0;
+    }
+    .header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .header h1 span { color: #60a5fa; }
+    .header p { color: #94a3b8; font-size: 14px; margin-top: 4px; }
+
+    /* ===== Tabs ===== */
+    .tabs { display: flex; gap: 0; margin-top: 20px; overflow-x: auto; }
+    .tab-btn {
+      background: transparent; border: none; color: #94a3b8;
+      font-size: 14px; font-weight: 500; padding: 10px 20px;
+      cursor: pointer; border-bottom: 3px solid transparent;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .tab-btn:hover { color: #cbd5e1; }
+    .tab-btn.active { color: #fff; border-bottom-color: #60a5fa; }
+
+    /* ===== Main ===== */
+    .main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ===== Cards ===== */
+    .card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 24px; margin-bottom: 20px;
+    }
+    .card h2 { font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #1a2332; }
+
+    /* ===== Explainer Banner ===== */
+    .explainer {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+      border: 1px solid #bfdbfe; border-radius: 10px;
+      padding: 20px 24px; margin-bottom: 20px;
+    }
+    .explainer h3 { font-size: 15px; font-weight: 600; color: #1e40af; margin-bottom: 8px; }
+    .explainer p { font-size: 13px; color: #3b82f6; line-height: 1.6; }
+
+    /* ===== Tables ===== */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      text-align: left; font-weight: 600; color: #64748b; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 10px 12px; border-bottom: 2px solid #e2e8f0;
+    }
+    td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    tr:hover td { background: #f8fafc; }
+
+    /* ===== Badges ===== */
+    .badge {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      padding: 2px 8px; border-radius: 9999px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .badge-active, .badge-approved { background: #d1fae5; color: #065f46; }
+    .badge-revoked, .badge-suspended { background: #fee2e2; color: #991b1b; }
+    .badge-expired { background: #fef3c7; color: #92400e; }
+    .badge-pending { background: #e0e7ff; color: #3730a3; }
+    .badge-skill { background: #dbeafe; color: #1e40af; }
+    .badge-completion { background: #d1fae5; color: #065f46; }
+    .badge-certification { background: #fce7f3; color: #9d174d; }
+    .badge-badge { background: #fef3c7; color: #92400e; }
+    .badge-hours { background: #e0e7ff; color: #3730a3; }
+    .badge-other { background: #f1f5f9; color: #475569; }
+    .badge-credential { background: #dbeafe; color: #1e40af; }
+    .badge-issuer { background: #fce7f3; color: #9d174d; }
+
+    /* ===== Forms ===== */
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: #475569; margin-bottom: 6px;
+    }
+    input[type="text"], input[type="email"], input[type="url"],
+    input[type="number"], input[type="date"], select {
+      width: 100%; padding: 10px 14px; border: 1px solid #d1d5db;
+      border-radius: 8px; font-size: 14px; font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus {
+      outline: none; border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+    }
+    .btn {
+      display: inline-block; padding: 10px 20px; border: none;
+      border-radius: 8px; font-size: 14px; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:hover { background: #2563eb; }
+    .btn-success { background: #10b981; color: #fff; }
+    .btn-success:hover { background: #059669; }
+    .btn-danger { background: #ef4444; color: #fff; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+    /* ===== Verify Section ===== */
+    .verify-input-row { display: flex; gap: 12px; align-items: stretch; max-width: 480px; }
+    .verify-input-row input {
+      flex: 1; font-size: 18px; font-family: "Courier New", monospace;
+      letter-spacing: 3px; text-transform: uppercase; text-align: center;
+    }
+    .verify-result {
+      margin-top: 20px; padding: 20px; border-radius: 8px; display: none;
+    }
+    .verify-result.show { display: block; }
+    .verify-result.valid { background: #d1fae5; border: 1px solid #6ee7b7; }
+    .verify-result.invalid { background: #fee2e2; border: 1px solid #fca5a5; }
+    .verify-result h3 { font-size: 16px; margin-bottom: 8px; }
+    .verify-result p { font-size: 14px; color: #475569; }
+
+    /* ===== Stats Row ===== */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px; margin-bottom: 20px;
+    }
+    .stat-card {
+      background: #fff; border-radius: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 16px 20px; text-align: center;
+    }
+    .stat-card .stat-value { font-size: 28px; font-weight: 700; color: #3b82f6; }
+    .stat-card .stat-label {
+      font-size: 12px; color: #64748b;
+      text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;
+    }
+
+    /* ===== Chain Status ===== */
+    .chain-status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; padding: 6px 14px;
+      border-radius: 8px; margin-bottom: 16px;
+    }
+    .chain-valid { background: #d1fae5; color: #065f46; }
+    .chain-invalid { background: #fee2e2; color: #991b1b; }
+
+    /* ===== Wallet Cards ===== */
+    .credential-card {
+      background: #fff; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 16px 20px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .credential-card .cred-info h4 { font-size: 15px; font-weight: 600; }
+    .credential-card .cred-info p { font-size: 13px; color: #64748b; margin-top: 2px; }
+    .credential-card .cred-code {
+      font-family: "Courier New", monospace; font-size: 14px; font-weight: 700;
+      color: #3b82f6; background: #eff6ff; padding: 4px 10px; border-radius: 6px;
+    }
+
+    /* ===== Ledger Hash ===== */
+    .hash-text {
+      font-family: "Courier New", monospace; font-size: 11px;
+      color: #94a3b8; word-break: break-all;
+    }
+
+    /* ===== Empty State ===== */
+    .empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; }
+    .empty-state p { font-size: 15px; }
+
+    /* ===== Loading ===== */
+    .loading { text-align: center; padding: 30px; color: #94a3b8; }
+
+    /* ===== Admin Grid ===== */
+    .admin-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .admin-grid .card { margin-bottom: 0; }
+    .admin-grid .form-group { margin-bottom: 12px; }
+
+    /* ===== Footer ===== */
+    .footer { text-align: center; padding: 24px 16px; color: #94a3b8; font-size: 13px; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 640px) {
+      .header { padding: 16px 16px 0; }
+      .header h1 { font-size: 22px; }
+      .tab-btn { padding: 8px 14px; font-size: 13px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .credential-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .verify-input-row { flex-direction: column; }
+      .admin-grid { grid-template-columns: 1fr; }
+      table { font-size: 12px; }
+    }
+  </style>
 </head>
 <body>
 
-  <header>
-    <h1>MyBlock</h1>
-    <p class="tagline">Universal Youth Credential Ledger</p>
-  </header>
+  <!-- ===== Header + Tabs ===== -->
+  <div class="header">
+    <h1>My<span>Block</span></h1>
+    <p>Universal Youth Credential Ledger</p>
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="ledger">Ledger</button>
+      <button class="tab-btn" data-tab="verify">Verify</button>
+      <button class="tab-btn" data-tab="wallet">Wallet</button>
+      <button class="tab-btn" data-tab="issuers">Issuers</button>
+      <button class="tab-btn" data-tab="credentials">Credentials</button>
+      <button class="tab-btn" data-tab="admin">Admin</button>
+    </nav>
+  </div>
 
-  <!-- Plain-language explainer -->
-  <section id="explainer">
-    <h2>What is this?</h2>
-    <p>A shared credential ledger where approved organizations&mdash;schools, nonprofits, rec centers, workforce programs&mdash;award digital micro-credentials to young people. Teens can store and present these credentials as proof of real skills. Employers and mentors can verify authenticity instantly, without ever calling the issuer.</p>
-    <div class="roles">
-      <div class="role-card">
-        <strong>Issuers</strong>
-        <span>Schools, nonprofits &amp; programs that award credentials</span>
-      </div>
-      <div class="role-card">
-        <strong>Youth</strong>
-        <span>Teens who earn and present their verified skills</span>
-      </div>
-      <div class="role-card">
-        <strong>Verifiers</strong>
-        <span>Employers &amp; mentors who check credential authenticity</span>
+  <!-- ===== Main ===== -->
+  <div class="main">
+
+    <!-- Explainer -->
+    <div class="explainer">
+      <h3>What is MyBlock?</h3>
+      <p>A shared credential ledger where approved organizations (schools, nonprofits, rec centers, workforce programs) award verifiable micro-credentials to youth. Teens build a portable "wallet" of skills. Employers verify instantly with an 8-character code. No crypto, no coins &mdash; just a straightforward, tamper-evident record.</p>
+    </div>
+
+    <!-- ====== LEDGER TAB ====== -->
+    <div id="tab-ledger" class="tab-panel active">
+      <div id="ledger-stats" class="stats-row"></div>
+      <div id="chain-status"></div>
+      <div class="card">
+        <h2>Audit Ledger</h2>
+        <div id="ledger-table" class="loading">Loading ledger...</div>
       </div>
     </div>
-  </section>
 
-  <!-- Navigation -->
-  <nav>
-    <button class="nav-btn active" data-page="ledger">Ledger</button>
-    <button class="nav-btn" data-page="verify">Verify</button>
-    <button class="nav-btn" data-page="issue">Issue</button>
-    <button class="nav-btn" data-page="wallet">My Credentials</button>
-    <button class="nav-btn" data-page="admin">Admin</button>
-  </nav>
-
-  <main>
-
-    <!-- ===== LEDGER (default) ===== -->
-    <section id="page-ledger" class="page active">
-      <div class="page-header">
-        <h2>Credential Ledger</h2>
-        <p>Every credential action&mdash;issued, verified, revoked&mdash;is recorded here in an immutable, hash-chained log. No edits. No deletions. Full transparency.</p>
-      </div>
-
-      <div class="ledger-controls">
-        <div id="ledger-integrity"></div>
-        <div id="ledger-stats"></div>
-      </div>
-
-      <div class="filter-bar">
-        <select id="ledger-filter-type">
-          <option value="">All event types</option>
-          <option value="credential_issued">Issued</option>
-          <option value="credential_verified">Verified</option>
-          <option value="credential_revoked">Revoked</option>
-          <option value="issuer_created">Issuer Created</option>
-          <option value="issuer_approved">Issuer Approved</option>
-          <option value="youth_registered">Youth Registered</option>
-        </select>
-        <select id="ledger-filter-entity">
-          <option value="">All entities</option>
-          <option value="credential">Credentials</option>
-          <option value="issuer">Issuers</option>
-          <option value="youth">Youth</option>
-        </select>
-        <button id="ledger-load-btn" class="btn">Load Entries</button>
-      </div>
-
-      <div id="ledger-list" class="result-area"></div>
-    </section>
-
-    <!-- ===== VERIFY ===== -->
-    <section id="page-verify" class="page">
-      <div class="page-header">
+    <!-- ====== VERIFY TAB ====== -->
+    <div id="tab-verify" class="tab-panel">
+      <div class="card">
         <h2>Verify a Credential</h2>
-        <p>Enter a verification code to instantly confirm whether a youth credential is authentic, active, and on the ledger.</p>
-      </div>
-      <form id="form-verify" class="inline-form">
-        <input type="text" id="verify-code" placeholder="e.g. ABC123XY" required>
-        <button type="submit" class="btn">Verify</button>
-      </form>
-      <div id="result-verify" class="result-area"></div>
-    </section>
-
-    <!-- ===== ISSUE ===== -->
-    <section id="page-issue" class="page">
-      <div class="page-header">
-        <h2>Issue a Credential</h2>
-        <p>Approved issuers can award micro-credentials to youth participants.</p>
-      </div>
-
-      <div class="issue-panels">
-        <!-- Define Credential -->
-        <div class="panel">
-          <h3>1. Define a Credential Type</h3>
-          <form id="form-creddef">
-            <select id="creddef-issuer" name="issuer_id" required><option value="">Select issuer&hellip;</option></select>
-            <input type="text" name="name" placeholder="Credential name" required>
-            <select name="category" required>
-              <option value="">Category&hellip;</option>
-              <option value="skill">Skill</option>
-              <option value="completion">Completion</option>
-              <option value="certification">Certification</option>
-              <option value="badge">Badge</option>
-              <option value="hours">Hours</option>
-              <option value="other">Other</option>
-            </select>
-            <input type="text" name="description" placeholder="Description (optional)">
-            <input type="text" name="requirements" placeholder="Requirements (optional)">
-            <input type="number" name="hours_required" placeholder="Hours required (optional)" min="0">
-            <button type="submit" class="btn">Create Definition</button>
-          </form>
-          <div id="result-creddef" class="form-result"></div>
+        <p style="color:#64748b;font-size:14px;margin-bottom:16px;">Enter the 8-character verification code from a credential to check its authenticity.</p>
+        <div class="verify-input-row">
+          <input type="text" id="verify-code" placeholder="e.g. ABC123XY" maxlength="8">
+          <button class="btn btn-primary" id="verify-btn">Verify</button>
         </div>
+        <div id="verify-result" class="verify-result"></div>
+      </div>
+    </div>
 
-        <!-- Issue Credential -->
-        <div class="panel">
-          <h3>2. Award to a Youth</h3>
-          <form id="form-issue">
-            <select id="issue-issuer" name="issuer_id" required><option value="">Select issuer&hellip;</option></select>
-            <select id="issue-creddef" name="credential_def_id" required><option value="">Select credential&hellip;</option></select>
-            <select id="issue-youth" name="youth_id" required><option value="">Select youth&hellip;</option></select>
-            <input type="text" name="notes" placeholder="Notes (optional)">
-            <input type="url" name="evidence_url" placeholder="Evidence URL (optional)">
-            <button type="submit" class="btn">Issue Credential</button>
-          </form>
-          <div id="result-issue" class="form-result"></div>
+    <!-- ====== WALLET TAB ====== -->
+    <div id="tab-wallet" class="tab-panel">
+      <div class="card">
+        <h2>Youth Credential Wallet</h2>
+        <div class="form-group">
+          <label>Select a youth participant</label>
+          <select id="wallet-youth-select">
+            <option value="">-- Choose --</option>
+          </select>
         </div>
+        <div id="wallet-credentials"></div>
       </div>
-    </section>
+    </div>
 
-    <!-- ===== MY CREDENTIALS (Wallet) ===== -->
-    <section id="page-wallet" class="page">
-      <div class="page-header">
-        <h2>My Credentials</h2>
-        <p>Youth can look up their credential wallet&mdash;a portable portfolio of verified skills.</p>
+    <!-- ====== ISSUERS TAB ====== -->
+    <div id="tab-issuers" class="tab-panel">
+      <div class="card">
+        <h2>Registered Issuers</h2>
+        <div id="issuers-table" class="loading">Loading issuers...</div>
       </div>
-      <div class="inline-form">
-        <select id="wallet-youth"><option value="">Select youth&hellip;</option></select>
-        <button id="wallet-load-btn" class="btn">Load Wallet</button>
-      </div>
-      <div id="wallet-result" class="result-area"></div>
-    </section>
+    </div>
 
-    <!-- ===== ADMIN ===== -->
-    <section id="page-admin" class="page">
-      <div class="page-header">
-        <h2>Admin</h2>
-        <p>Register issuers, enroll youth, and manage the network.</p>
+    <!-- ====== CREDENTIALS TAB ====== -->
+    <div id="tab-credentials" class="tab-panel">
+      <div class="card">
+        <h2>Credential Definitions</h2>
+        <div id="cred-defs-table" class="loading">Loading definitions...</div>
       </div>
+    </div>
 
+    <!-- ====== ADMIN TAB ====== -->
+    <div id="tab-admin" class="tab-panel">
       <div class="admin-grid">
+        <!-- Issue Credential -->
+        <div class="card">
+          <h2>Issue a Credential</h2>
+          <div class="form-group">
+            <label>Issuer</label>
+            <select id="admin-issuer"></select>
+          </div>
+          <div class="form-group">
+            <label>Credential Definition</label>
+            <select id="admin-creddef"></select>
+          </div>
+          <div class="form-group">
+            <label>Youth</label>
+            <select id="admin-youth"></select>
+          </div>
+          <div class="form-group">
+            <label>Notes (optional)</label>
+            <input type="text" id="admin-notes" placeholder="e.g. Outstanding performance">
+          </div>
+          <button class="btn btn-success" id="admin-issue-btn">Issue Credential</button>
+          <div id="admin-issue-result" style="margin-top:16px;"></div>
+        </div>
+
         <!-- Register Issuer -->
-        <div class="admin-card">
-          <h3>Register an Issuer</h3>
-          <form id="form-issuer">
-            <input name="name" placeholder="Organization name" required>
-            <select name="type" required>
-              <option value="">Type&hellip;</option>
+        <div class="card">
+          <h2>Register New Issuer</h2>
+          <div class="form-group">
+            <label>Organization Name</label>
+            <input type="text" id="reg-name" placeholder="e.g. Code4Youth">
+          </div>
+          <div class="form-group">
+            <label>Type</label>
+            <select id="reg-type">
+              <option value="">-- Select --</option>
               <option value="school">School</option>
               <option value="nonprofit">Nonprofit</option>
               <option value="rec_center">Rec Center</option>
@@ -173,65 +325,458 @@
               <option value="government">Government</option>
               <option value="other">Other</option>
             </select>
-            <input name="contact_email" type="email" placeholder="Contact email" required>
-            <input name="contact_phone" placeholder="Phone (optional)">
-            <input name="address" placeholder="Address (optional)">
-            <button type="submit" class="btn">Register</button>
-          </form>
-          <div id="result-issuer" class="form-result"></div>
-        </div>
-
-        <!-- Approve Issuer -->
-        <div class="admin-card">
-          <h3>Approve an Issuer</h3>
-          <form id="form-approve">
-            <select name="issuer_id" id="approve-issuer-select" required>
-              <option value="">Select pending issuer&hellip;</option>
-            </select>
-            <input name="approved_by" placeholder="Approved by (your name)" required>
-            <button type="submit" class="btn">Approve</button>
-          </form>
-          <div id="result-approve" class="form-result"></div>
+          </div>
+          <div class="form-group">
+            <label>Contact Email</label>
+            <input type="email" id="reg-email" placeholder="admin@example.org">
+          </div>
+          <button class="btn btn-primary" id="reg-issuer-btn">Register</button>
+          <div id="reg-issuer-result" style="margin-top:16px;"></div>
         </div>
 
         <!-- Enroll Youth -->
-        <div class="admin-card">
-          <h3>Enroll Youth</h3>
-          <form id="form-youth">
-            <input name="first_name" placeholder="First name" required>
-            <input name="last_name" placeholder="Last name" required>
-            <input name="date_of_birth" type="date" required>
-            <input name="email" type="email" placeholder="Email (optional)">
-            <input name="city" placeholder="City (optional)">
-            <button type="submit" class="btn">Enroll</button>
-          </form>
-          <div id="result-youth" class="form-result"></div>
+        <div class="card">
+          <h2>Enroll Youth</h2>
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="enroll-first" placeholder="Maria">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="enroll-last" placeholder="Garcia">
+          </div>
+          <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" id="enroll-dob">
+          </div>
+          <div class="form-group">
+            <label>Email (optional)</label>
+            <input type="email" id="enroll-email" placeholder="email@example.com">
+          </div>
+          <button class="btn btn-primary" id="enroll-youth-btn">Enroll</button>
+          <div id="enroll-youth-result" style="margin-top:16px;"></div>
         </div>
       </div>
 
-      <!-- Issuer Directory -->
-      <div class="panel" style="margin-top:1.5rem">
-        <h3>Issuer Directory</h3>
-        <div class="filter-bar" style="margin-bottom:1rem">
-          <select id="issuer-filter">
-            <option value="">All statuses</option>
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="suspended">Suspended</option>
-            <option value="revoked">Revoked</option>
-          </select>
-          <button id="load-issuers-btn" class="btn btn-secondary">Load</button>
-        </div>
-        <div id="issuer-directory" class="result-area"></div>
+      <!-- Approve Pending Issuers -->
+      <div class="card" style="margin-top:20px;">
+        <h2>Approve Pending Issuers</h2>
+        <div id="admin-pending-issuers" class="loading">Loading...</div>
       </div>
-    </section>
+    </div>
+  </div>
 
-  </main>
+  <div class="footer">MyBlock &mdash; No crypto. No coins. No speculation. Just verified skills.</div>
 
-  <footer>
-    <p>MyBlock &mdash; No crypto. No coins. No speculation. Just verified skills.</p>
-  </footer>
+  <script>
+    // ===== API Helper =====
+    var API = {
+      get: function(path) {
+        return fetch("/api" + path).then(function(r) { return r.json(); });
+      },
+      post: function(path, body) {
+        return fetch("/api" + path, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        }).then(function(r) { return r.json(); });
+      },
+    };
 
-  <script src="/app.js"></script>
+    // ===== Utility =====
+    function esc(str) {
+      if (!str) return "";
+      var d = document.createElement("div");
+      d.textContent = str;
+      return d.innerHTML;
+    }
+    function badgeFor(val) {
+      var v = String(val || "").replace(/_/g, " ");
+      var cls = String(val || "").replace(/\s+/g, "-");
+      return '<span class="badge badge-' + esc(cls) + '">' + esc(v) + "</span>";
+    }
+    function fmtDate(iso) {
+      if (!iso) return "\u2014";
+      return new Date(iso + "Z").toLocaleDateString("en-US", {
+        year: "numeric", month: "short", day: "numeric",
+      });
+    }
+    function shortHash(h) {
+      if (!h) return "";
+      return h.substring(0, 10) + "\u2026";
+    }
+
+    // ===== Tab Switching =====
+    document.querySelectorAll(".tab-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".tab-btn").forEach(function(b) { b.classList.remove("active"); });
+        document.querySelectorAll(".tab-panel").forEach(function(p) { p.classList.remove("active"); });
+        btn.classList.add("active");
+        document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+        var tab = btn.dataset.tab;
+        if (tab === "ledger") loadLedger();
+        if (tab === "verify") document.getElementById("verify-code").focus();
+        if (tab === "wallet") loadWalletYouth();
+        if (tab === "issuers") loadIssuers();
+        if (tab === "credentials") loadCredDefs();
+        if (tab === "admin") loadAdmin();
+      });
+    });
+
+    // ========================================
+    // LEDGER
+    // ========================================
+    function loadLedger() {
+      Promise.all([
+        API.get("/ledger?limit=50"),
+        API.get("/ledger/stats"),
+        API.get("/ledger/verify"),
+      ]).then(function(results) {
+        var entries = results[0];
+        var stats = results[1];
+        var integrity = results[2];
+
+        // Stats
+        var statsEl = document.getElementById("ledger-stats");
+        var byType = stats.by_event_type || [];
+        statsEl.innerHTML =
+          '<div class="stat-card"><div class="stat-value">' + stats.total_entries +
+          '</div><div class="stat-label">Total Entries</div></div>' +
+          byType.map(function(t) {
+            return '<div class="stat-card"><div class="stat-value">' + t.count +
+              '</div><div class="stat-label">' + esc(t.event_type.replace(/_/g, " ")) + '</div></div>';
+          }).join("");
+
+        // Chain integrity
+        var chainEl = document.getElementById("chain-status");
+        if (integrity.valid) {
+          chainEl.innerHTML = '<div class="chain-status chain-valid">Hash chain intact \u2014 ' +
+            integrity.entries_checked + ' entries verified</div>';
+        } else {
+          chainEl.innerHTML = '<div class="chain-status chain-invalid">Chain broken at #' +
+            integrity.broken_at + ': ' + esc(integrity.reason) + '</div>';
+        }
+
+        // Table
+        var tableEl = document.getElementById("ledger-table");
+        if (!entries.length) {
+          tableEl.innerHTML = '<div class="empty-state"><p>No ledger entries yet.</p></div>';
+          return;
+        }
+        var html = "<table><thead><tr><th>#</th><th>Event</th><th>Entity</th><th>Actor</th><th>Time</th><th>Hash</th></tr></thead><tbody>";
+        entries.forEach(function(e) {
+          var data = {};
+          try { data = JSON.parse(e.data); } catch(x) {}
+          var desc = data.credential_name || data.issuer_name || e.entity_id.substring(0, 8) + "\u2026";
+          html += "<tr>" +
+            "<td>" + e.seq + "</td>" +
+            "<td>" + badgeFor(e.event_type) + "</td>" +
+            "<td>" + esc(desc) + "</td>" +
+            "<td>" + esc(e.actor || "\u2014") + "</td>" +
+            "<td>" + fmtDate(e.timestamp) + "</td>" +
+            '<td><span class="hash-text" title="' + esc(e.hash) + '">' + shortHash(e.hash) + "</span></td>" +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        tableEl.innerHTML = html;
+      }).catch(function(err) {
+        document.getElementById("ledger-table").innerHTML =
+          '<div class="empty-state"><p>Error loading ledger: ' + esc(err.message) + '</p></div>';
+      });
+    }
+
+    // ========================================
+    // VERIFY
+    // ========================================
+    document.getElementById("verify-btn").addEventListener("click", doVerify);
+    document.getElementById("verify-code").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") doVerify();
+    });
+
+    function doVerify() {
+      var code = document.getElementById("verify-code").value.trim().toUpperCase();
+      if (!code) return;
+      var el = document.getElementById("verify-result");
+      el.className = "verify-result show";
+      el.innerHTML = "Checking\u2026";
+      API.get("/verify/" + encodeURIComponent(code)).then(function(data) {
+        if (data.valid) {
+          var c = data.credential;
+          el.className = "verify-result show valid";
+          el.innerHTML =
+            "<h3>Credential Verified</h3>" +
+            "<p><strong>" + esc(c.credential_name) + "</strong> " + badgeFor(c.category) + "</p>" +
+            "<p>Issued to: <strong>" + esc(c.youth_first_name + " " + c.youth_last_name) + "</strong></p>" +
+            "<p>Issued by: " + esc(c.issuer_name) + " (" + esc(c.issuer_type) + ")</p>" +
+            "<p>Date: " + fmtDate(c.issued_at) + "</p>" +
+            (c.credential_description ? '<p style="margin-top:8px;color:#475569;font-size:13px;">' + esc(c.credential_description) + "</p>" : "");
+        } else {
+          el.className = "verify-result show invalid";
+          el.innerHTML = "<h3>Not Valid</h3><p>" + esc(data.reason) + "</p>";
+        }
+      }).catch(function(err) {
+        el.className = "verify-result show invalid";
+        el.innerHTML = "<h3>Error</h3><p>" + esc(err.message) + "</p>";
+      });
+    }
+
+    // ========================================
+    // WALLET
+    // ========================================
+    var walletYouthLoaded = false;
+    function loadWalletYouth() {
+      if (walletYouthLoaded) return;
+      walletYouthLoaded = true;
+      API.get("/youth").then(function(youth) {
+        var sel = document.getElementById("wallet-youth-select");
+        youth.forEach(function(y) {
+          var opt = document.createElement("option");
+          opt.value = y.id;
+          opt.textContent = y.first_name + " " + y.last_name;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    document.getElementById("wallet-youth-select").addEventListener("change", function() {
+      var id = this.value;
+      var el = document.getElementById("wallet-credentials");
+      if (!id) { el.innerHTML = ""; return; }
+      el.innerHTML = '<div class="loading">Loading wallet\u2026</div>';
+      API.get("/youth/" + id + "/wallet").then(function(data) {
+        if (!data.credentials || !data.credentials.length) {
+          el.innerHTML = '<div class="empty-state"><p>No active credentials for this youth.</p></div>';
+          return;
+        }
+        el.innerHTML = data.credentials.map(function(c) {
+          return '<div class="credential-card">' +
+            '<div class="cred-info"><h4>' + esc(c.credential_name) + ' ' + badgeFor(c.category) + '</h4>' +
+            '<p>Issued by ' + esc(c.issuer_name) + ' \u2014 ' + fmtDate(c.issued_at) + '</p>' +
+            (c.credential_description ? '<p style="font-size:12px;color:#94a3b8;margin-top:4px;">' + esc(c.credential_description) + '</p>' : '') +
+            '</div>' +
+            '<div class="cred-code">' + esc(c.verification_code) + '</div>' +
+            '</div>';
+        }).join("");
+      }).catch(function(err) {
+        el.innerHTML = '<div class="empty-state"><p>Error: ' + esc(err.message) + '</p></div>';
+      });
+    });
+
+    // ========================================
+    // ISSUERS
+    // ========================================
+    function loadIssuers() {
+      API.get("/issuers").then(function(issuers) {
+        var el = document.getElementById("issuers-table");
+        if (!issuers.length) {
+          el.innerHTML = '<div class="empty-state"><p>No issuers registered.</p></div>';
+          return;
+        }
+        var html = "<table><thead><tr><th>Name</th><th>Type</th><th>Status</th><th>Email</th><th>Registered</th></tr></thead><tbody>";
+        issuers.forEach(function(i) {
+          html += "<tr>" +
+            "<td><strong>" + esc(i.name) + "</strong></td>" +
+            "<td>" + esc(i.type.replace(/_/g, " ")) + "</td>" +
+            "<td>" + badgeFor(i.status) + "</td>" +
+            "<td>" + esc(i.contact_email) + "</td>" +
+            "<td>" + fmtDate(i.created_at) + "</td>" +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        el.innerHTML = html;
+      }).catch(function(err) {
+        document.getElementById("issuers-table").innerHTML =
+          '<div class="empty-state"><p>Error: ' + esc(err.message) + '</p></div>';
+      });
+    }
+
+    // ========================================
+    // CREDENTIALS
+    // ========================================
+    function loadCredDefs() {
+      API.get("/credentials/definitions").then(function(defs) {
+        var el = document.getElementById("cred-defs-table");
+        if (!defs.length) {
+          el.innerHTML = '<div class="empty-state"><p>No credential definitions.</p></div>';
+          return;
+        }
+        var html = "<table><thead><tr><th>Name</th><th>Category</th><th>Issuer</th><th>Hours</th><th>Description</th></tr></thead><tbody>";
+        defs.forEach(function(d) {
+          html += "<tr>" +
+            "<td><strong>" + esc(d.name) + "</strong></td>" +
+            "<td>" + badgeFor(d.category) + "</td>" +
+            "<td>" + esc(d.issuer_name) + "</td>" +
+            "<td>" + (d.hours_required || "\u2014") + "</td>" +
+            '<td style="max-width:300px;font-size:13px;color:#64748b;">' + esc(d.description || "") + "</td>" +
+            "</tr>";
+        });
+        html += "</tbody></table>";
+        el.innerHTML = html;
+      }).catch(function(err) {
+        document.getElementById("cred-defs-table").innerHTML =
+          '<div class="empty-state"><p>Error: ' + esc(err.message) + '</p></div>';
+      });
+    }
+
+    // ========================================
+    // ADMIN
+    // ========================================
+    var adminLoaded = false;
+    function loadAdmin() {
+      if (adminLoaded) return;
+      adminLoaded = true;
+      Promise.all([
+        API.get("/issuers?status=approved"),
+        API.get("/credentials/definitions"),
+        API.get("/youth"),
+      ]).then(function(results) {
+        var issuers = results[0];
+        var defs = results[1];
+        var youth = results[2];
+
+        var iSel = document.getElementById("admin-issuer");
+        iSel.innerHTML = '<option value="">-- Select Issuer --</option>';
+        issuers.forEach(function(i) {
+          iSel.innerHTML += '<option value="' + esc(i.id) + '">' + esc(i.name) + '</option>';
+        });
+
+        var dSel = document.getElementById("admin-creddef");
+        dSel.innerHTML = '<option value="">-- Select Definition --</option>';
+        defs.forEach(function(d) {
+          dSel.innerHTML += '<option value="' + esc(d.id) + '" data-issuer="' + esc(d.issuer_id) + '">' +
+            esc(d.name) + ' (' + esc(d.issuer_name) + ')</option>';
+        });
+
+        var ySel = document.getElementById("admin-youth");
+        ySel.innerHTML = '<option value="">-- Select Youth --</option>';
+        youth.forEach(function(y) {
+          ySel.innerHTML += '<option value="' + esc(y.id) + '">' + esc(y.first_name + " " + y.last_name) + '</option>';
+        });
+
+        loadPendingIssuers();
+      });
+    }
+
+    function loadPendingIssuers() {
+      API.get("/issuers?status=pending").then(function(pending) {
+        var el = document.getElementById("admin-pending-issuers");
+        if (!pending.length) {
+          el.innerHTML = '<div class="empty-state"><p>No pending issuers to approve.</p></div>';
+          return;
+        }
+        el.innerHTML = pending.map(function(i) {
+          return '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9;">' +
+            '<div><strong>' + esc(i.name) + '</strong> <span style="color:#64748b;">(' + esc(i.type) + ')</span></div>' +
+            '<button class="btn btn-success btn-sm" onclick="approveIssuer(\'' + esc(i.id) + '\')">Approve</button>' +
+            '</div>';
+        }).join("");
+      });
+    }
+
+    // Admin: Issue credential
+    document.getElementById("admin-issue-btn").addEventListener("click", function() {
+      var issuer_id = document.getElementById("admin-issuer").value;
+      var credential_def_id = document.getElementById("admin-creddef").value;
+      var youth_id = document.getElementById("admin-youth").value;
+      var notes = document.getElementById("admin-notes").value.trim();
+
+      if (!issuer_id || !credential_def_id || !youth_id) {
+        document.getElementById("admin-issue-result").innerHTML =
+          '<p style="color:#ef4444;">Please select an issuer, definition, and youth.</p>';
+        return;
+      }
+
+      API.post("/credentials", {
+        credential_def_id: credential_def_id,
+        issuer_id: issuer_id,
+        youth_id: youth_id,
+        notes: notes || undefined,
+      }).then(function(cred) {
+        if (cred.error) {
+          document.getElementById("admin-issue-result").innerHTML =
+            '<p style="color:#ef4444;">' + esc(cred.error) + '</p>';
+        } else {
+          document.getElementById("admin-issue-result").innerHTML =
+            '<div style="background:#d1fae5;padding:12px 16px;border-radius:8px;">' +
+            '<strong>Credential issued!</strong> Verification code: ' +
+            '<code style="font-size:16px;font-weight:700;color:#3b82f6;">' +
+            esc(cred.verification_code) + '</code></div>';
+          document.getElementById("admin-notes").value = "";
+          walletYouthLoaded = false;
+        }
+      }).catch(function(err) {
+        document.getElementById("admin-issue-result").innerHTML =
+          '<p style="color:#ef4444;">Error: ' + esc(err.message) + '</p>';
+      });
+    });
+
+    // Admin: Register issuer
+    document.getElementById("reg-issuer-btn").addEventListener("click", function() {
+      var name = document.getElementById("reg-name").value.trim();
+      var type = document.getElementById("reg-type").value;
+      var email = document.getElementById("reg-email").value.trim();
+      if (!name || !type || !email) {
+        document.getElementById("reg-issuer-result").innerHTML =
+          '<p style="color:#ef4444;">Name, type, and email are required.</p>';
+        return;
+      }
+      API.post("/issuers", { name: name, type: type, contact_email: email }).then(function(res) {
+        if (res.error) {
+          document.getElementById("reg-issuer-result").innerHTML =
+            '<p style="color:#ef4444;">' + esc(res.error) + '</p>';
+        } else {
+          document.getElementById("reg-issuer-result").innerHTML =
+            '<div style="background:#d1fae5;padding:12px 16px;border-radius:8px;">' +
+            '<strong>Issuer registered!</strong> Status: pending approval</div>';
+          document.getElementById("reg-name").value = "";
+          document.getElementById("reg-type").value = "";
+          document.getElementById("reg-email").value = "";
+          loadPendingIssuers();
+        }
+      });
+    });
+
+    // Admin: Enroll youth
+    document.getElementById("enroll-youth-btn").addEventListener("click", function() {
+      var first = document.getElementById("enroll-first").value.trim();
+      var last = document.getElementById("enroll-last").value.trim();
+      var dob = document.getElementById("enroll-dob").value;
+      var email = document.getElementById("enroll-email").value.trim();
+      if (!first || !last || !dob) {
+        document.getElementById("enroll-youth-result").innerHTML =
+          '<p style="color:#ef4444;">First name, last name, and date of birth are required.</p>';
+        return;
+      }
+      API.post("/youth", {
+        first_name: first, last_name: last, date_of_birth: dob,
+        email: email || undefined,
+      }).then(function(res) {
+        if (res.error) {
+          document.getElementById("enroll-youth-result").innerHTML =
+            '<p style="color:#ef4444;">' + esc(res.error) + '</p>';
+        } else {
+          document.getElementById("enroll-youth-result").innerHTML =
+            '<div style="background:#d1fae5;padding:12px 16px;border-radius:8px;">' +
+            '<strong>Youth enrolled!</strong> ' + esc(first + " " + last) + '</div>';
+          document.getElementById("enroll-first").value = "";
+          document.getElementById("enroll-last").value = "";
+          document.getElementById("enroll-dob").value = "";
+          document.getElementById("enroll-email").value = "";
+          walletYouthLoaded = false;
+        }
+      });
+    });
+
+    // Admin: Approve issuer
+    window.approveIssuer = function(id) {
+      API.post("/issuers/" + id + "/approve", { approved_by: "admin_ui" }).then(function() {
+        adminLoaded = false;
+        loadAdmin();
+      });
+    };
+
+    // ===== Initial Load =====
+    loadLedger();
+  </script>
 </body>
 </html>
