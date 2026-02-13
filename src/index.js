@@ -11,7 +11,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(express.static(path.join(__dirname, "..", "public"), {
+  etag: false,
+  lastModified: false,
+  setHeaders: (res) => {
+    res.set("Cache-Control", "no-store");
+  },
+}));
 
 // --- Routes ---
 app.use("/api/issuers", issuersRouter);
