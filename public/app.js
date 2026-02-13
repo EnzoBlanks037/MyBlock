@@ -425,3 +425,22 @@ handleForm("form-creddef", "result-creddef", "POST", () => "/credentials/definit
 
 handleForm("form-issue", "result-issue", "POST", () => "/credentials",
   (r) => "Issued! Verification code: " + r.verification_code);
+
+/* ===== Ledger Tab Failsafe ===== */
+(function ensureLedgerTab() {
+  if (document.querySelector('[data-page="ledger"]')) return;
+  var adminBtn = document.querySelector('[data-page="admin"]');
+  if (!adminBtn) return;
+  var btn = document.createElement("button");
+  btn.className = "nav-btn";
+  btn.setAttribute("data-page", "ledger");
+  btn.textContent = "Ledger";
+  adminBtn.parentNode.insertBefore(btn, adminBtn);
+  btn.addEventListener("click", function () {
+    document.querySelectorAll(".nav-btn").forEach(function (b) { b.classList.remove("active"); });
+    document.querySelectorAll(".page").forEach(function (p) { p.classList.remove("active"); });
+    btn.classList.add("active");
+    document.getElementById("page-ledger").classList.add("active");
+    loadLedger();
+  });
+})();
