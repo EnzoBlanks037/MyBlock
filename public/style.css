@@ -36,7 +36,7 @@ header {
   text-align: center;
 }
 
-.logo {
+header h1 {
   font-size: 2rem;
   font-weight: 800;
   letter-spacing: -0.5px;
@@ -50,6 +50,60 @@ header {
   color: var(--text-dim);
   font-size: 0.95rem;
   margin-top: 0.25rem;
+}
+
+/* ===== Explainer ===== */
+#explainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+#explainer h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+}
+
+#explainer > p {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  max-width: 650px;
+  margin: 0 auto 1.5rem;
+}
+
+.roles {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.role-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  min-width: 180px;
+  flex: 1;
+  max-width: 220px;
+  text-align: center;
+}
+
+.role-card strong {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+  color: var(--text);
+}
+
+.role-card span {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.4;
 }
 
 /* ===== Nav ===== */
@@ -95,36 +149,9 @@ main {
 .page { display: none; }
 .page.active { display: block; }
 
-.page-header {
-  margin-bottom: 1.5rem;
-}
-
-.page-header h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 0.25rem;
-}
-
-.page-header p {
-  color: var(--text-dim);
-  font-size: 0.95rem;
-}
-
-/* ===== Verify Box ===== */
-.verify-box {
-  display: flex;
-  gap: 0.75rem;
-  max-width: 420px;
-}
-
-.verify-box input {
-  flex: 1;
-  font-size: 1.25rem;
-  text-align: center;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  font-family: "SF Mono", "Fira Code", monospace;
-}
+.page-header { margin-bottom: 1.5rem; }
+.page-header h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+.page-header p { color: var(--text-dim); font-size: 0.95rem; }
 
 /* ===== Forms & Inputs ===== */
 input, select, textarea {
@@ -139,14 +166,19 @@ input, select, textarea {
   transition: border-color 0.2s;
 }
 
-input:focus, select:focus {
-  border-color: var(--accent);
-}
-
+input:focus, select:focus { border-color: var(--accent); }
 input::placeholder { color: var(--text-dim); }
 
+.inline-form {
+  display: flex;
+  gap: 0.75rem;
+  max-width: 500px;
+}
+
+.inline-form select { flex: 1; }
+
 /* ===== Buttons ===== */
-.btn-primary {
+.btn {
   background: var(--accent);
   color: #fff;
   border: none;
@@ -159,7 +191,7 @@ input::placeholder { color: var(--text-dim); }
   white-space: nowrap;
 }
 
-.btn-primary:hover { background: var(--accent-hover); }
+.btn:hover { background: var(--accent-hover); }
 
 .btn-secondary {
   background: var(--surface-2);
@@ -175,9 +207,7 @@ input::placeholder { color: var(--text-dim); }
 .btn-secondary:hover { background: var(--border); }
 
 /* ===== Result Area ===== */
-.result-area {
-  margin-top: 1.5rem;
-}
+.result-area { margin-top: 1.5rem; }
 
 /* ===== Credential Card ===== */
 .credential-card {
@@ -188,13 +218,8 @@ input::placeholder { color: var(--text-dim); }
   margin-bottom: 1rem;
 }
 
-.credential-card.valid {
-  border-left: 4px solid var(--green);
-}
-
-.credential-card.invalid {
-  border-left: 4px solid var(--red);
-}
+.credential-card.valid { border-left: 4px solid var(--green); }
+.credential-card.invalid { border-left: 4px solid var(--red); }
 
 .credential-card .card-header {
   display: flex;
@@ -204,10 +229,7 @@ input::placeholder { color: var(--text-dim); }
   gap: 1rem;
 }
 
-.credential-card .card-title {
-  font-size: 1.15rem;
-  font-weight: 700;
-}
+.credential-card .card-title { font-size: 1.15rem; font-weight: 700; }
 
 .credential-card .card-meta {
   display: grid;
@@ -223,11 +245,9 @@ input::placeholder { color: var(--text-dim); }
   letter-spacing: 0.5px;
 }
 
-.card-meta .value {
-  color: var(--text);
-}
+.card-meta .value { color: var(--text); }
 
-/* ===== Status Badges ===== */
+/* ===== Badges ===== */
 .badge {
   display: inline-block;
   padding: 0.2rem 0.65rem;
@@ -238,21 +258,9 @@ input::placeholder { color: var(--text-dim); }
   letter-spacing: 0.5px;
 }
 
-.badge-valid, .badge-active, .badge-approved {
-  background: var(--green-bg);
-  color: var(--green);
-}
-
-.badge-invalid, .badge-revoked {
-  background: var(--red-bg);
-  color: var(--red);
-}
-
-.badge-pending, .badge-expired, .badge-suspended {
-  background: var(--yellow-bg);
-  color: var(--yellow);
-}
-
+.badge-valid, .badge-active, .badge-approved { background: var(--green-bg); color: var(--green); }
+.badge-invalid, .badge-revoked { background: var(--red-bg); color: var(--red); }
+.badge-pending, .badge-expired, .badge-suspended { background: var(--yellow-bg); color: var(--yellow); }
 .badge-skill { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
 .badge-completion { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
 .badge-certification { background: rgba(236, 72, 153, 0.12); color: #f472b6; }
@@ -260,7 +268,7 @@ input::placeholder { color: var(--text-dim); }
 .badge-hours { background: rgba(6, 182, 212, 0.12); color: #22d3ee; }
 .badge-other { background: rgba(148, 163, 184, 0.12); color: #94a3b8; }
 
-/* ===== Verification Result ===== */
+/* ===== Verify Result ===== */
 .verify-status {
   display: flex;
   align-items: center;
@@ -295,10 +303,7 @@ input::placeholder { color: var(--text-dim); }
   border-bottom: 1px solid var(--border);
 }
 
-.wallet-header .count {
-  color: var(--text-dim);
-  font-weight: 400;
-}
+.wallet-header .count { color: var(--text-dim); font-weight: 400; }
 
 .wallet-code {
   font-family: "SF Mono", "Fira Code", monospace;
@@ -323,26 +328,47 @@ input::placeholder { color: var(--text-dim); }
   flex-wrap: wrap;
 }
 
-.issuer-info h4 {
-  font-size: 1rem;
-  font-weight: 600;
-}
+.issuer-info h4 { font-size: 1rem; font-weight: 600; }
+.issuer-info .issuer-detail { color: var(--text-dim); font-size: 0.85rem; }
 
-.issuer-info .issuer-detail {
-  color: var(--text-dim);
-  font-size: 0.85rem;
-}
-
-/* ===== Search / Filter Bar ===== */
-.search-box, .filter-bar {
+/* ===== Filter Bar ===== */
+.filter-bar {
   display: flex;
   gap: 0.75rem;
-  max-width: 460px;
+  max-width: 600px;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.search-box select, .filter-bar select {
-  flex: 1;
+.filter-bar select { flex: 1; min-width: 140px; }
+
+/* ===== Issue Panels ===== */
+.issue-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+/* ===== Panel ===== */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}
+
+.panel h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
 }
 
 /* ===== Admin Grid ===== */
@@ -359,10 +385,6 @@ input::placeholder { color: var(--text-dim); }
   padding: 1.5rem;
 }
 
-.admin-card.wide {
-  grid-column: 1 / -1;
-}
-
 .admin-card h3 {
   font-size: 1rem;
   font-weight: 700;
@@ -377,17 +399,7 @@ input::placeholder { color: var(--text-dim); }
   gap: 0.6rem;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 0.6rem;
-}
-
-.form-result {
-  margin-top: 0.75rem;
-  font-size: 0.88rem;
-}
-
+.form-result { margin-top: 0.75rem; font-size: 0.88rem; }
 .form-result.success { color: var(--green); }
 .form-result.error { color: var(--red); }
 
@@ -400,9 +412,7 @@ input::placeholder { color: var(--text-dim); }
 }
 
 /* ===== Ledger ===== */
-.ledger-controls {
-  margin-bottom: 1.25rem;
-}
+.ledger-controls { margin-bottom: 1.25rem; }
 
 .ledger-chain-status {
   display: flex;
@@ -415,15 +425,8 @@ input::placeholder { color: var(--text-dim); }
   margin-bottom: 1rem;
 }
 
-.ledger-chain-status.valid {
-  background: var(--green-bg);
-  color: var(--green);
-}
-
-.ledger-chain-status.invalid {
-  background: var(--red-bg);
-  color: var(--red);
-}
+.ledger-chain-status.valid { background: var(--green-bg); color: var(--green); }
+.ledger-chain-status.invalid { background: var(--red-bg); color: var(--red); }
 
 .ledger-stats-grid {
   display: flex;
@@ -441,11 +444,7 @@ input::placeholder { color: var(--text-dim); }
   min-width: 100px;
 }
 
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent);
-}
+.stat-value { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
 
 .stat-label {
   font-size: 0.75rem;
@@ -479,11 +478,7 @@ input::placeholder { color: var(--text-dim); }
   color: var(--text-dim);
 }
 
-.ledger-time {
-  font-size: 0.8rem;
-  color: var(--text-dim);
-  margin-left: auto;
-}
+.ledger-time { font-size: 0.8rem; color: var(--text-dim); margin-left: auto; }
 
 .ledger-entry-body {
   display: flex;
@@ -494,15 +489,8 @@ input::placeholder { color: var(--text-dim); }
   margin-bottom: 0.4rem;
 }
 
-.ledger-detail::after {
-  content: "\00b7";
-  margin-left: 0.5rem;
-  color: var(--text-dim);
-}
-
-.ledger-detail:last-child::after {
-  content: "";
-}
+.ledger-detail::after { content: "\00b7"; margin-left: 0.5rem; color: var(--text-dim); }
+.ledger-detail:last-child::after { content: ""; }
 
 .ledger-hash {
   font-family: "SF Mono", "Fira Code", monospace;
@@ -520,9 +508,12 @@ input::placeholder { color: var(--text-dim); }
 
 .badge-ledger-credential_issued { background: var(--green-bg); color: var(--green); }
 .badge-ledger-credential_revoked { background: var(--red-bg); color: var(--red); }
+.badge-ledger-credential_verified { background: rgba(91, 138, 245, 0.12); color: var(--accent); }
+.badge-ledger-issuer_created { background: rgba(139, 92, 246, 0.12); color: #a78bfa; }
 .badge-ledger-issuer_approved { background: rgba(91, 138, 245, 0.12); color: var(--accent); }
 .badge-ledger-issuer_suspended { background: var(--yellow-bg); color: var(--yellow); }
 .badge-ledger-issuer_revoked { background: var(--red-bg); color: var(--red); }
+.badge-ledger-youth_registered { background: rgba(6, 182, 212, 0.12); color: #22d3ee; }
 
 /* ===== Footer ===== */
 footer {
@@ -536,8 +527,10 @@ footer {
 
 /* ===== Responsive ===== */
 @media (max-width: 600px) {
-  .verify-box { flex-direction: column; }
+  .inline-form { flex-direction: column; }
   .admin-grid { grid-template-columns: 1fr; }
+  .issue-panels { grid-template-columns: 1fr; }
   .credential-card .card-meta { grid-template-columns: 1fr; }
-  .form-row { grid-template-columns: 1fr; }
+  .roles { flex-direction: column; align-items: center; }
+  .filter-bar { flex-direction: column; }
 }

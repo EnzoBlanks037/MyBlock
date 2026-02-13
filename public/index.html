@@ -3,126 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyBlock — Youth Credentials</title>
-  <link rel="stylesheet" href="/style.css?v=2">
+  <title>MyBlock — Universal Youth Credential Ledger</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
+
   <header>
-    <div class="header-inner">
-      <h1 class="logo">MyBlock</h1>
-      <p class="tagline">Universal Youth Credential Ledger</p>
-    </div>
+    <h1>MyBlock</h1>
+    <p class="tagline">Universal Youth Credential Ledger</p>
   </header>
 
+  <!-- Plain-language explainer -->
+  <section id="explainer">
+    <h2>What is this?</h2>
+    <p>A shared credential ledger where approved organizations&mdash;schools, nonprofits, rec centers, workforce programs&mdash;award digital micro-credentials to young people. Teens can store and present these credentials as proof of real skills. Employers and mentors can verify authenticity instantly, without ever calling the issuer.</p>
+    <div class="roles">
+      <div class="role-card">
+        <strong>Issuers</strong>
+        <span>Schools, nonprofits &amp; programs that award credentials</span>
+      </div>
+      <div class="role-card">
+        <strong>Youth</strong>
+        <span>Teens who earn and present their verified skills</span>
+      </div>
+      <div class="role-card">
+        <strong>Verifiers</strong>
+        <span>Employers &amp; mentors who check credential authenticity</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation -->
   <nav>
-    <button class="nav-btn active" data-page="verify">Verify</button>
-    <button class="nav-btn" data-page="wallet">Wallet</button>
-    <button class="nav-btn" data-page="issuers">Issuers</button>
-    <button class="nav-btn" data-page="credentials">Credentials</button>
-    <button class="nav-btn" data-page="ledger">Ledger</button>
+    <button class="nav-btn active" data-page="ledger">Ledger</button>
+    <button class="nav-btn" data-page="verify">Verify</button>
+    <button class="nav-btn" data-page="issue">Issue</button>
+    <button class="nav-btn" data-page="wallet">My Credentials</button>
     <button class="nav-btn" data-page="admin">Admin</button>
   </nav>
 
   <main>
-    <!-- ========== VERIFY ========== -->
-    <section id="page-verify" class="page active">
-      <div class="page-header">
-        <h2>Verify a Credential</h2>
-        <p>Enter the 8-character code from a youth's credential to check its authenticity.</p>
-      </div>
-      <div class="verify-box">
-        <input type="text" id="verify-code" placeholder="e.g. DFDFEF11" maxlength="8" autocomplete="off" spellcheck="false">
-        <button id="verify-btn" class="btn-primary">Verify</button>
-      </div>
-      <div id="verify-result" class="result-area"></div>
-    </section>
 
-    <!-- ========== WALLET ========== -->
-    <section id="page-wallet" class="page">
+    <!-- ===== LEDGER (default) ===== -->
+    <section id="page-ledger" class="page active">
       <div class="page-header">
-        <h2>Youth Wallet</h2>
-        <p>Look up a teen's earned credentials.</p>
-      </div>
-      <div class="search-box">
-        <select id="wallet-youth-select">
-          <option value="">Select a youth...</option>
-        </select>
-        <button id="wallet-btn" class="btn-primary">View Wallet</button>
-      </div>
-      <div id="wallet-result" class="result-area"></div>
-    </section>
-
-    <!-- ========== ISSUERS ========== -->
-    <section id="page-issuers" class="page">
-      <div class="page-header">
-        <h2>Approved Issuers</h2>
-        <p>Organizations authorized to award credentials in the network.</p>
-      </div>
-      <div class="filter-bar">
-        <select id="issuer-filter">
-          <option value="">All statuses</option>
-          <option value="approved" selected>Approved</option>
-          <option value="pending">Pending</option>
-          <option value="suspended">Suspended</option>
-          <option value="revoked">Revoked</option>
-        </select>
-        <button id="issuer-load-btn" class="btn-secondary">Load</button>
-      </div>
-      <div id="issuers-list" class="result-area"></div>
-    </section>
-
-    <!-- ========== CREDENTIALS CATALOG ========== -->
-    <section id="page-credentials" class="page">
-      <div class="page-header">
-        <h2>Credential Catalog</h2>
-        <p>Browse all credential types that can be awarded across the network.</p>
-      </div>
-      <button id="cred-defs-load" class="btn-secondary">Load Catalog</button>
-      <div id="cred-defs-list" class="result-area"></div>
-    </section>
-
-    <!-- ========== LEDGER ========== -->
-    <section id="page-ledger" class="page">
-      <div class="page-header">
-        <h2>Shared Credential Ledger</h2>
-        <p>Tamper-evident, hash-chained record of every credential event across all organizations.</p>
+        <h2>Credential Ledger</h2>
+        <p>Every credential action&mdash;issued, verified, revoked&mdash;is recorded here in an immutable, hash-chained log. No edits. No deletions. Full transparency.</p>
       </div>
 
       <div class="ledger-controls">
-        <div class="ledger-integrity" id="ledger-integrity"></div>
-        <div class="ledger-stats" id="ledger-stats"></div>
+        <div id="ledger-integrity"></div>
+        <div id="ledger-stats"></div>
       </div>
 
       <div class="filter-bar">
         <select id="ledger-filter-type">
-          <option value="">All events</option>
-          <option value="credential_issued">Credential Issued</option>
-          <option value="credential_revoked">Credential Revoked</option>
+          <option value="">All event types</option>
+          <option value="credential_issued">Issued</option>
+          <option value="credential_verified">Verified</option>
+          <option value="credential_revoked">Revoked</option>
+          <option value="issuer_created">Issuer Created</option>
           <option value="issuer_approved">Issuer Approved</option>
-          <option value="issuer_suspended">Issuer Suspended</option>
-          <option value="issuer_revoked">Issuer Revoked</option>
+          <option value="youth_registered">Youth Registered</option>
         </select>
-        <button id="ledger-load-btn" class="btn-secondary">Load</button>
+        <select id="ledger-filter-entity">
+          <option value="">All entities</option>
+          <option value="credential">Credentials</option>
+          <option value="issuer">Issuers</option>
+          <option value="youth">Youth</option>
+        </select>
+        <button id="ledger-load-btn" class="btn">Load Entries</button>
       </div>
 
       <div id="ledger-list" class="result-area"></div>
     </section>
 
-    <!-- ========== ADMIN ========== -->
+    <!-- ===== VERIFY ===== -->
+    <section id="page-verify" class="page">
+      <div class="page-header">
+        <h2>Verify a Credential</h2>
+        <p>Enter a verification code to instantly confirm whether a youth credential is authentic, active, and on the ledger.</p>
+      </div>
+      <form id="form-verify" class="inline-form">
+        <input type="text" id="verify-code" placeholder="e.g. ABC123XY" required>
+        <button type="submit" class="btn">Verify</button>
+      </form>
+      <div id="result-verify" class="result-area"></div>
+    </section>
+
+    <!-- ===== ISSUE ===== -->
+    <section id="page-issue" class="page">
+      <div class="page-header">
+        <h2>Issue a Credential</h2>
+        <p>Approved issuers can award micro-credentials to youth participants.</p>
+      </div>
+
+      <div class="issue-panels">
+        <!-- Define Credential -->
+        <div class="panel">
+          <h3>1. Define a Credential Type</h3>
+          <form id="form-creddef">
+            <select id="creddef-issuer" name="issuer_id" required><option value="">Select issuer&hellip;</option></select>
+            <input type="text" name="name" placeholder="Credential name" required>
+            <select name="category" required>
+              <option value="">Category&hellip;</option>
+              <option value="skill">Skill</option>
+              <option value="completion">Completion</option>
+              <option value="certification">Certification</option>
+              <option value="badge">Badge</option>
+              <option value="hours">Hours</option>
+              <option value="other">Other</option>
+            </select>
+            <input type="text" name="description" placeholder="Description (optional)">
+            <input type="text" name="requirements" placeholder="Requirements (optional)">
+            <input type="number" name="hours_required" placeholder="Hours required (optional)" min="0">
+            <button type="submit" class="btn">Create Definition</button>
+          </form>
+          <div id="result-creddef" class="form-result"></div>
+        </div>
+
+        <!-- Issue Credential -->
+        <div class="panel">
+          <h3>2. Award to a Youth</h3>
+          <form id="form-issue">
+            <select id="issue-issuer" name="issuer_id" required><option value="">Select issuer&hellip;</option></select>
+            <select id="issue-creddef" name="credential_def_id" required><option value="">Select credential&hellip;</option></select>
+            <select id="issue-youth" name="youth_id" required><option value="">Select youth&hellip;</option></select>
+            <input type="text" name="notes" placeholder="Notes (optional)">
+            <input type="url" name="evidence_url" placeholder="Evidence URL (optional)">
+            <button type="submit" class="btn">Issue Credential</button>
+          </form>
+          <div id="result-issue" class="form-result"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== MY CREDENTIALS (Wallet) ===== -->
+    <section id="page-wallet" class="page">
+      <div class="page-header">
+        <h2>My Credentials</h2>
+        <p>Youth can look up their credential wallet&mdash;a portable portfolio of verified skills.</p>
+      </div>
+      <div class="inline-form">
+        <select id="wallet-youth"><option value="">Select youth&hellip;</option></select>
+        <button id="wallet-load-btn" class="btn">Load Wallet</button>
+      </div>
+      <div id="wallet-result" class="result-area"></div>
+    </section>
+
+    <!-- ===== ADMIN ===== -->
     <section id="page-admin" class="page">
       <div class="page-header">
-        <h2>Admin Panel</h2>
-        <p>Register issuers, enroll youth, define credentials, and issue awards.</p>
+        <h2>Admin</h2>
+        <p>Register issuers, enroll youth, and manage the network.</p>
       </div>
 
       <div class="admin-grid">
         <!-- Register Issuer -->
         <div class="admin-card">
-          <h3>Register Issuer</h3>
+          <h3>Register an Issuer</h3>
           <form id="form-issuer">
             <input name="name" placeholder="Organization name" required>
             <select name="type" required>
-              <option value="">Type...</option>
+              <option value="">Type&hellip;</option>
               <option value="school">School</option>
               <option value="nonprofit">Nonprofit</option>
               <option value="rec_center">Rec Center</option>
@@ -133,22 +176,22 @@
             <input name="contact_email" type="email" placeholder="Contact email" required>
             <input name="contact_phone" placeholder="Phone (optional)">
             <input name="address" placeholder="Address (optional)">
-            <button type="submit" class="btn-primary">Register</button>
+            <button type="submit" class="btn">Register</button>
           </form>
-          <div class="form-result" id="result-issuer"></div>
+          <div id="result-issuer" class="form-result"></div>
         </div>
 
         <!-- Approve Issuer -->
         <div class="admin-card">
-          <h3>Approve Issuer</h3>
+          <h3>Approve an Issuer</h3>
           <form id="form-approve">
             <select name="issuer_id" id="approve-issuer-select" required>
-              <option value="">Select pending issuer...</option>
+              <option value="">Select pending issuer&hellip;</option>
             </select>
             <input name="approved_by" placeholder="Approved by (your name)" required>
-            <button type="submit" class="btn-primary">Approve</button>
+            <button type="submit" class="btn">Approve</button>
           </form>
-          <div class="form-result" id="result-approve"></div>
+          <div id="result-approve" class="form-result"></div>
         </div>
 
         <!-- Enroll Youth -->
@@ -160,65 +203,35 @@
             <input name="date_of_birth" type="date" required>
             <input name="email" type="email" placeholder="Email (optional)">
             <input name="city" placeholder="City (optional)">
-            <button type="submit" class="btn-primary">Enroll</button>
+            <button type="submit" class="btn">Enroll</button>
           </form>
-          <div class="form-result" id="result-youth"></div>
-        </div>
-
-        <!-- Define Credential -->
-        <div class="admin-card">
-          <h3>Define Credential</h3>
-          <form id="form-creddef">
-            <select name="issuer_id" class="issuer-select-approved" required>
-              <option value="">Select issuer...</option>
-            </select>
-            <input name="name" placeholder="Credential name" required>
-            <select name="category" required>
-              <option value="">Category...</option>
-              <option value="skill">Skill</option>
-              <option value="completion">Completion</option>
-              <option value="certification">Certification</option>
-              <option value="badge">Badge</option>
-              <option value="hours">Hours</option>
-              <option value="other">Other</option>
-            </select>
-            <input name="description" placeholder="Description (optional)">
-            <input name="requirements" placeholder="Requirements (optional)">
-            <input name="hours_required" type="number" placeholder="Hours required" min="0">
-            <button type="submit" class="btn-primary">Create</button>
-          </form>
-          <div class="form-result" id="result-creddef"></div>
-        </div>
-
-        <!-- Issue Credential -->
-        <div class="admin-card wide">
-          <h3>Issue Credential</h3>
-          <form id="form-issue">
-            <div class="form-row">
-              <select name="issuer_id" class="issuer-select-approved" id="issue-issuer" required>
-                <option value="">Select issuer...</option>
-              </select>
-              <select name="credential_def_id" id="issue-creddef" required>
-                <option value="">Select credential...</option>
-              </select>
-              <select name="youth_id" id="issue-youth" required>
-                <option value="">Select youth...</option>
-              </select>
-            </div>
-            <input name="notes" placeholder="Notes (optional)">
-            <input name="evidence_url" placeholder="Evidence URL (optional)">
-            <button type="submit" class="btn-primary">Issue Credential</button>
-          </form>
-          <div class="form-result" id="result-issue"></div>
+          <div id="result-youth" class="form-result"></div>
         </div>
       </div>
+
+      <!-- Issuer Directory -->
+      <div class="panel" style="margin-top:1.5rem">
+        <h3>Issuer Directory</h3>
+        <div class="filter-bar" style="margin-bottom:1rem">
+          <select id="issuer-filter">
+            <option value="">All statuses</option>
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="suspended">Suspended</option>
+            <option value="revoked">Revoked</option>
+          </select>
+          <button id="load-issuers-btn" class="btn btn-secondary">Load</button>
+        </div>
+        <div id="issuer-directory" class="result-area"></div>
+      </div>
     </section>
+
   </main>
 
   <footer>
     <p>MyBlock &mdash; No crypto. No coins. No speculation. Just verified skills.</p>
   </footer>
 
-  <script src="/app.js?v=2"></script>
+  <script src="/app.js"></script>
 </body>
 </html>
