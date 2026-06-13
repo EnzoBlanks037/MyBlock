@@ -1,0 +1,6 @@
+robin_stocks
+pandas
+numpy
+pyotp
+python-dotenv
+pytz
